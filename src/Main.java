@@ -3,17 +3,11 @@ public class Main {
         int width = 1280;
         int height = 720;
 
-        Graph graph = new Graph(width, height, -10, 10);
-        graph.calculatePoints();
-
-
-        GraphWindow window = graph.createGraphWindow(width, height, -10, 10);
+        Graph graph = new Graph(width, height, -10, 10, 0, 0);
         try {
-            window.calculateGraph(graph.getRealPoints());
+            graph.calculatePoints();
         } catch (NanException e) {
             //
         }
-        window.drawAxes();
-        window.drawGraph();
     }
 }

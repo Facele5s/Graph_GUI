@@ -13,47 +13,17 @@ public class GraphWindow {
 
     private List<ScreenPoint> graphPoints = new ArrayList<>();
 
-    public GraphWindow(int width, int height, double x_min, double x_max) {
+    public GraphWindow(int width, int height, double x_min, double x_max, Double y_min, Double y_max) {
         this.width = width;
         this.height = height;
         this.x_min = x_min;
         this.x_max = x_max;
-        this.y_min = Double.NaN;
-        this.y_max = Double.NaN;
-    }
-
-    public GraphWindow(int width, int height, double x_min, double x_max, double y_min, double y_max) {
-        this(width, height, x_min, x_max);
         this.y_min = y_min;
         this.y_max = y_max;
     }
 
-    public void calculateGraph(List<Graph.RealPoint> realPoints) throws NanException {
-        if(y_min.equals(Double.NaN)) {
-            for(int i = 0; i < realPoints.size(); i++) {
-                if(realPoints.get(i).isReal()) {
-                    y_min = y_max = realPoints.get(i).getY();
-                    break;
-                }
-            }
-            if(y_min.equals(Double.NaN)) throw new NanException("The function doesn't have real values");
+    public void calculateScreenPoints(List<Graph.Point> points) {
 
-            for(Graph.RealPoint p: realPoints) {
-                if(p.isReal()) {
-                    double y = p.getY();
-                    if(y < y_min) y_min = y;
-                    if(y > y_max) y_max = y;
-                }
-            }
-        }
-
-        for(Graph.RealPoint p: realPoints) {
-            double y = p.getY();
-            if(p.isReal() && y <= y_max && y>= y_min) {
-                ScreenPoint point = new ScreenPoint(p.getX(), y);
-                graphPoints.add(point);
-            }
-        }
     }
 
     public void drawGraph() {
@@ -65,19 +35,19 @@ public class GraphWindow {
     }
 
     static class ScreenPoint {
-        private double x;
-        private double y;
+        private int x;
+        private int y;
 
-        public ScreenPoint(double x, double y) {
+        public ScreenPoint(int x, int y) {
             this.x = x;
             this.y = y;
         }
 
-        public double getX() {
+        public int getX() {
             return x;
         }
 
-        public double getY() {
+        public int getY() {
             return y;
         }
     }
