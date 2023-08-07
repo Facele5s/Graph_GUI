@@ -5,15 +5,12 @@ public class Graph {
     private int width;
     private int height;
 
-    private int x_min;
-    private int x_max;
-
-    private double y_min_real;
-    private double y_max_real;
+    private double x_min;
+    private double x_max;
 
     private List<RealPoint> realPoints = new ArrayList<>();
 
-    public Graph(int width, int height, int x_min, int x_max) {
+    public Graph(int width, int height, double x_min, double x_max) {
         this.width = width;
         this.height = height;
         this.x_min = x_min;
@@ -21,7 +18,7 @@ public class Graph {
     }
 
     private double func(double x) {
-        return Math.sqrt(x);
+        return 1 / x;
     }
 
     public void setX_min(int x_min) {
@@ -43,29 +40,33 @@ public class Graph {
 
         for(double x = x_min; x <= x_max; x+= resolution) {
             y = func(x);
-            if(y.equals(Double.POSITIVE_INFINITY)) {
-                point = new RealPoint(x, y, 2);
-            } else if(y.equals(Double.NEGATIVE_INFINITY)) {
-                point = new RealPoint(x, y, 3);
-            } else if(y.equals(Double.NaN)) {
-                point = new RealPoint(x, y, 4);
+            if(y.equals(Double.POSITIVE_INFINITY) || y.equals(Double.NEGATIVE_INFINITY) || y.equals(Double.NaN)) {
+                point = new RealPoint(x, y, false);
             } else {
-                point = new RealPoint(x, y, 1);
+                point = new RealPoint(x, y, true);
             }
 
             realPoints.add(point);
         }
     }
 
+    public GraphWindow createGraphWindow(int width, int height, double x_min, double x_max) {
+        return new GraphWindow(width, height, x_min, x_max);
+    }
+
+    public GraphWindow createGraphWindow(int width, int height, double x_min, double x_max, double y_min, double y_max) {
+        return new GraphWindow(width, height, x_min, x_max, y_min, y_max);
+    }
+
     static class RealPoint {
         private double x;
         private double y;
-        private int type;   // 1 - real, 2 - p_infinity, 3 - n_infinity, 4 - NaN
+        private boolean real;
 
-        public RealPoint(double x, double y, int type) {
+        public RealPoint(double x, double y, boolean real) {
             this.x = x;
             this.y = y;
-            this.type = type;
+            this.real = real;
         }
 
         public double getX() {
@@ -76,19 +77,13 @@ public class Graph {
             return y;
         }
 
-        public int getType() {
-            return type;
+        public boolean isReal() {
+            return real;
         }
 
         @Override
         public String toString() {
-            String type_info = "";
-            switch (type) {
-                case 1 -> type_info = "real";
-                case 2 -> type_info = "p_infinity";
-                case 3 -> type_info = "n_infinity";
-                case 4 -> type_info = "NaN";
-            }
+            String type_info = real ? "real" : "NaN or inf";
 
             return String.format("RealPoint[x: %f, y: %f, type: %s]", x, y, type_info);
         }

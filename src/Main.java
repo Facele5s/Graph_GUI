@@ -4,13 +4,15 @@ public class Main {
         int height = 720;
 
         Graph graph = new Graph(width, height, -10, 10);
-        GraphWindow window = new GraphWindow(width, height);
         graph.calculatePoints();
-        for(Graph.RealPoint p: graph.getRealPoints()) {
-            System.out.println(p);
-        }
 
-        window.calculateGraph(graph.getRealPoints());
+
+        GraphWindow window = graph.createGraphWindow(width, height, -10, 10);
+        try {
+            window.calculateGraph(graph.getRealPoints());
+        } catch (NanException e) {
+            //
+        }
         window.drawAxes();
         window.drawGraph();
     }
