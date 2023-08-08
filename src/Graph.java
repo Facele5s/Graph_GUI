@@ -26,6 +26,22 @@ public class Graph {
         return 1 / x;
     }
 
+    public double getX_min() {
+        return x_min;
+    }
+
+    public double getX_max() {
+        return x_max;
+    }
+
+    public Double getY_min() {
+        return y_min;
+    }
+
+    public Double getY_max() {
+        return y_max;
+    }
+
     public void setX_min(int x_min) {
         this.x_min = x_min;
     }
@@ -51,9 +67,10 @@ public class Graph {
         Double y;
         Point point;
         boolean hasRealValues = false;
+        points.clear();
 
-        if(y_min == 0) y_min = -resolution * height / 2;
-        if(y_max == 0) y_max = resolution * height / 2;
+        if(y_min.equals(Double.NaN)) y_min = -resolution * height * 0.9 / 2;  // 10% of vertical space must be free
+        if(y_max.equals(Double.NaN)) y_max = resolution * height * 0.9 / 2;
 
         for(double x = x_min; x <= x_max; x+= resolution) {
             y = func(x);
@@ -68,10 +85,6 @@ public class Graph {
         }
 
         if(!hasRealValues) throw new NanException("The function doesn't have real values");
-    }
-
-    public GraphWindow createGraphWindow(int width, int height, double x_min, double x_max, double y_min, double y_max) {
-        return new GraphWindow(width, height, x_min, x_max, y_min, y_max);
     }
 
     static class Point {

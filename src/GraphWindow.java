@@ -11,21 +11,28 @@ public class GraphWindow {
     private Double y_min;
     private Double y_max;
 
+    private List<Graph.Point> points = new ArrayList<>();
     private List<ScreenPoint> graphPoints = new ArrayList<>();
 
-    public GraphWindow(int width, int height, double x_min, double x_max, Double y_min, Double y_max) {
+    public GraphWindow(Graph graph, int width, int height) {
         this.width = width;
         this.height = height;
-        this.x_min = x_min;
-        this.x_max = x_max;
-        this.y_min = y_min;
-        this.y_max = y_max;
+
+        updateGraphParams(graph);
     }
 
-    public void calculateScreenPoints(List<Graph.Point> points) {
-
+    public void updateGraphParams(Graph graph) {
+        this.x_min = graph.getX_min();
+        this.x_max = graph.getX_max();
+        this.y_min = graph.getY_min();
+        this.y_max = graph.getY_max();
+        this.points = graph.getRealPoints();
     }
 
+
+    public void calculateScreenPoints() {
+
+    }
     public void drawGraph() {
 
     }
