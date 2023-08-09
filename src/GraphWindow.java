@@ -54,8 +54,10 @@ public class GraphWindow {
                 graphPoints.add(new ScreenPoint(x, true));
             }
         }
+    }
 
-        /*Graphics2D g = img.createGraphics();
+    public void drawGraph() {
+        Graphics2D g = img.createGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, width, height);
         g.setColor(Color.WHITE);
@@ -64,22 +66,29 @@ public class GraphWindow {
             try {
                 if(!p.isEmpty()) img.setRGB(p.getX(), p.getY(), Color.WHITE.getRGB());
             } catch (ArrayIndexOutOfBoundsException e) {
-                //
+                System.out.println(e);
             }
-
-            //img.setRGB(p.getX() / 2, 0, Color.WHITE.getRGB());
         }
 
-        File f = new File("imgg.png");
+        ScreenPoint p_last = graphPoints.get(0);
+        ScreenPoint p_current;
+
+        for(int i = 1; i < graphPoints.size(); i++) {
+            p_current = graphPoints.get(i);
+
+            if(!p_last.isEmpty() && !p_current.isEmpty()) {
+                g.drawLine(p_last.getX(), p_last.getY(), p_current.getX(), p_current.getY());
+            }
+
+            p_last = p_current;
+        }
+
+        File f = new File("img.png");
         try {
             ImageIO.write(img, "png", f);
         } catch (IOException e) {
-            //
-        }*/
-    }
-
-    public void drawGraph() {
-
+            System.out.println(e);
+        }
     }
 
     public void drawAxes() {
