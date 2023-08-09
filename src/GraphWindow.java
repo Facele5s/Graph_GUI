@@ -45,10 +45,9 @@ public class GraphWindow {
         int y;
 
         for(Graph.Point p: points) {
-            x = (int) (p.getX() / resX + (width) / 2);
-
+            x = (int) ((p.getX() - x_min) / resX);
             if(p.isReal()) {
-                y = (int) (-p.getY() / resY + height / 2);
+                y = (int) ((-p.getY() - y_min) / resY);
                 graphPoints.add(new ScreenPoint(x, y, false));
             } else {
                 graphPoints.add(new ScreenPoint(x, true));
@@ -61,14 +60,6 @@ public class GraphWindow {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, width, height);
         g.setColor(Color.WHITE);
-
-        for(ScreenPoint p: graphPoints) {
-            try {
-                if(!p.isEmpty()) img.setRGB(p.getX(), p.getY(), Color.WHITE.getRGB());
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println(e);
-            }
-        }
 
         ScreenPoint p_last = graphPoints.get(0);
         ScreenPoint p_current;
