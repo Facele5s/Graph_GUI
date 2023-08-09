@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Graph {
@@ -24,6 +26,16 @@ public class Graph {
 
     private double func(double x) {
         return 1 / x;
+    }
+
+    private List<Point> getBreaks(double x_min, double x_max) {
+        List<Point> breaks = new ArrayList<>();
+
+        if(x_min <= 0 && x_max >= 0) {
+            breaks.add(new Point(0, Double.NaN, false));
+        }
+
+        return breaks;
     }
 
     public double getX_min() {
@@ -63,18 +75,20 @@ public class Graph {
     }
 
     public void calculatePoints() throws NanException {
-        double resX = (x_max - x_min + 1) / width;   // x steps per pixel
+        points.clear();
+
+        double resolution = (x_max - x_min + 1) / width;   // x steps per pixel
+        boolean hasRealValues = false;
+
         double x;
         Double y;
         Point point;
-        boolean hasRealValues = false;
-        points.clear();
 
-        if(y_min.equals(Double.NaN)) y_min = -resX * height * 0.9 / 2;  // 10% of vertical space must be free
-        if(y_max.equals(Double.NaN)) y_max = resX * height * 0.9 / 2;
+        if(y_min.equals(Double.NaN)) y_min = -resolution * height * 0.9 / 2;  // 10% of vertical space must be free
+        if(y_max.equals(Double.NaN)) y_max = resolution * height * 0.9 / 2;
 
         for(int i = 0; i < width; i++) {
-            x = i * (x_max - x_min) / (width - 1);
+            x = x_min + i * (x_max - x_min) / (width - 1);
             y = func(x);
 
             if(y.equals(Double.POSITIVE_INFINITY) || y.equals(Double.NEGATIVE_INFINITY) || y.equals(Double.NaN)) {
@@ -87,10 +101,13 @@ public class Graph {
             points.add(point);
         }
 
+        points.addAll(getBreaks(x_min, x_max));
+        Collections.sort(points);
+
         if(!hasRealValues) throw new NanException("The function doesn't have real values");
     }
 
-    static class Point {
+    static class Point implements Comparable<Point> {
         private double x;
         private double y;
         private boolean real;
@@ -118,6 +135,15 @@ public class Graph {
             String type_info = real ? "real" : "NaN or inf";
 
             return String.format("Point[x: %f, y: %f, type: %s]", x, y, type_info);
+        }
+
+        @Override
+        public int compareTo(Point p) {
+            if(this.x > p.getX()) {
+                return 1;
+            } else if(this.x < p.getX()) {
+                return -1;
+            } else return 0;
         }
     }
 
