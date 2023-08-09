@@ -63,17 +63,20 @@ public class Graph {
     }
 
     public void calculatePoints() throws NanException {
-        double resolution = (x_max - x_min) / width;   // x steps per pixel
+        double resX = (x_max - x_min + 1) / width;   // x steps per pixel
+        double x;
         Double y;
         Point point;
         boolean hasRealValues = false;
         points.clear();
 
-        if(y_min.equals(Double.NaN)) y_min = -resolution * height * 0.9 / 2;  // 10% of vertical space must be free
-        if(y_max.equals(Double.NaN)) y_max = resolution * height * 0.9 / 2;
+        if(y_min.equals(Double.NaN)) y_min = -resX * height * 0.9 / 2;  // 10% of vertical space must be free
+        if(y_max.equals(Double.NaN)) y_max = resX * height * 0.9 / 2;
 
-        for(double x = x_min; x <= x_max; x+= resolution) {
+        for(int i = 0; i < width; i++) {
+            x = i * (x_max - x_min) / (width - 1);
             y = func(x);
+
             if(y.equals(Double.POSITIVE_INFINITY) || y.equals(Double.NEGATIVE_INFINITY) || y.equals(Double.NaN)) {
                 point = new Point(x, y, false);
             } else {
