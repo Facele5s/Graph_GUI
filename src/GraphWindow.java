@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,8 @@ public class GraphWindow {
     private double resX;
     private double resY;
 
+    Font font_digits;
+
     private List<Graph.Point> points = new ArrayList<>();
     private List<ScreenPoint> graphPoints = new ArrayList<>();
 
@@ -31,6 +35,13 @@ public class GraphWindow {
         this.height = height;
         img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         g = img.createGraphics();
+
+        try {
+            font_digits = Font.createFont(Font.TRUETYPE_FONT, new File("Cambria.ttf"));
+            g.setFont(font_digits.deriveFont(20f));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         updateGraphParams(graph);
     }
@@ -45,7 +56,7 @@ public class GraphWindow {
 
     public void calculateScreenPoints() {
         resX = (x_max - x_min) / (width - 1);
-        resY = (y_max - y_min) / (height * 0.9 - 1); // 10% of vertical space must be free
+        resY = (y_max - y_min) / (height - 1);
 
         int x;
         int y;
@@ -80,11 +91,14 @@ public class GraphWindow {
             p_last = p_current;
         }
 
+        drawAxes();
+        drawDigitsStrokes();
+
         /*File f = new File("img.png");
         try {
             ImageIO.write(img, "png", f);
         } catch (IOException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }*/
     }
 
@@ -101,12 +115,40 @@ public class GraphWindow {
         g.drawLine(width, y_axis, width - 15, y_axis - 6);
     }
 
+    public void drawDigitsStrokes() {
+        double x_step = (x_max - x_min) / 17;
+        for(double i = x_min + x_step; i <= x_max; i+= x_step) {
+            if(i == 0) continue;
+
+            g.drawLine(getScreenX(i), getScreenY(0)-5, getScreenX(i), getScreenY(0)+5);
+
+            BigDecimal bd = new BigDecimal(i);
+            bd = bd.round(new MathContext(1));
+            String value = Double.toString(bd.doubleValue());
+
+            g.drawString(value, getScreenX(i)-16, getScreenY(0) + 22);
+        }
+
+        double y_step = (y_max - y_min) / 10;
+        for(double i = y_min + y_step; i <= y_max - y_step; i+= y_step) {
+            if(i == 0) continue;
+
+            g.drawLine(getScreenX(0)-5, getScreenY(i), getScreenX(0)+5, getScreenY(i));
+
+            BigDecimal bd = new BigDecimal(i);
+            bd = bd.round(new MathContext(1));
+            String value = Double.toString(bd.doubleValue());
+
+            g.drawString(value, getScreenX(0) + 9, getScreenY(i) + 7);
+        }
+    }
+
     public int getScreenX(double x) {
         return (int) ((x - x_min) / resX);
     }
 
     public int getScreenY(double y) {
-        return (int) (height * 0.95 - (y - y_min) / resY - 1);
+        return (int) (height - (y - y_min) / resY - 1);
     }
 
     static class ScreenPoint {
