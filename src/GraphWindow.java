@@ -46,8 +46,9 @@ public class GraphWindow {
 
         for(Graph.Point p: points) {
             x = (int) ((p.getX() - x_min) / resX);
-            if(p.isReal()) {
-                y = (int) ((-p.getY() - y_min) / resY);
+
+            if(p.isReal() && p.getY() >= y_min && p.getY() <= y_max) {
+                y = (int) (height * 0.95 - (p.getY() - y_min) / resY - 1);
                 graphPoints.add(new ScreenPoint(x, y, false));
             } else {
                 graphPoints.add(new ScreenPoint(x, true));
