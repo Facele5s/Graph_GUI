@@ -18,6 +18,9 @@ public class GraphWindow {
     private Double y_min;
     private Double y_max;
 
+    private double resX;
+    private double resY;
+
     private List<Graph.Point> points = new ArrayList<>();
     private List<ScreenPoint> graphPoints = new ArrayList<>();
 
@@ -38,17 +41,17 @@ public class GraphWindow {
     }
 
     public void calculateScreenPoints() {
-        double resX = (x_max - x_min) / (width - 1);  // Resolution: steps per pixel
-        double resY = (y_max - y_min) / (height * 0.9 - 1); // 10% of vertical space must be free
+        resX = (x_max - x_min) / (width - 1);
+        resY = (y_max - y_min) / (height * 0.9 - 1); // 10% of vertical space must be free
 
         int x;
         int y;
 
         for(Graph.Point p: points) {
-            x = (int) ((p.getX() - x_min) / resX);
+            x = getScreenX(p.getX());
 
             if(p.isReal() && p.getY() >= y_min && p.getY() <= y_max) {
-                y = (int) (height * 0.95 - (p.getY() - y_min) / resY - 1);
+                y = getScreenY(p.getY());
                 graphPoints.add(new ScreenPoint(x, y, false));
             } else {
                 graphPoints.add(new ScreenPoint(x, true));
@@ -85,6 +88,14 @@ public class GraphWindow {
 
     public void drawAxes() {
 
+    }
+
+    public int getScreenX(double x) {
+        return (int) ((x - x_min) / resX);
+    }
+
+    public int getScreenY(double y) {
+        return (int) (height * 0.95 - (y - y_min) / resY - 1);
     }
 
     static class ScreenPoint {
