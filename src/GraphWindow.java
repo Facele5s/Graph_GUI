@@ -24,10 +24,13 @@ public class GraphWindow {
     private List<Graph.Point> points = new ArrayList<>();
     private List<ScreenPoint> graphPoints = new ArrayList<>();
 
+    Graphics2D g;
+
     public GraphWindow(Graph graph, int width, int height) {
         this.width = width;
         this.height = height;
         img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        g = img.createGraphics();
 
         updateGraphParams(graph);
     }
@@ -60,7 +63,6 @@ public class GraphWindow {
     }
 
     public void drawGraph() {
-        Graphics2D g = img.createGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, width, height);
         g.setColor(Color.WHITE);
@@ -78,16 +80,25 @@ public class GraphWindow {
             p_last = p_current;
         }
 
-        File f = new File("img.png");
+        /*File f = new File("img.png");
         try {
             ImageIO.write(img, "png", f);
         } catch (IOException e) {
             System.out.println(e);
-        }
+        }*/
     }
 
     public void drawAxes() {
+        int x_axis = getScreenX(0);
+        int y_axis = getScreenY(0);
 
+        g.drawLine(x_axis, 0, x_axis, height);  // Vertical axis
+        g.drawLine(x_axis, 0, x_axis - 6, 15);
+        g.drawLine(x_axis, 0, x_axis + 6, 15);
+
+        g.drawLine(0, y_axis, width, y_axis);   // Horizontal axis
+        g.drawLine(width, y_axis, width - 15, y_axis + 6);
+        g.drawLine(width, y_axis, width - 15, y_axis - 6);
     }
 
     public int getScreenX(double x) {
