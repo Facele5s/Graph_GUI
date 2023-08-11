@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphWindow {
-    BufferedImage img;
+    private final BufferedImage img;
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
     private double x_min;
     private double x_max;
@@ -26,7 +26,7 @@ public class GraphWindow {
     private List<Graph.Point> points = new ArrayList<>();
     private List<ScreenPoint> graphPoints = new ArrayList<>();
 
-    Graphics2D g;
+    private final Graphics2D g;
 
     public GraphWindow(Graph graph, int width, int height) {
         this.width = width;
@@ -48,7 +48,7 @@ public class GraphWindow {
         return img;
     }
 
-    public void updateGraphParams(Graph graph) {
+    private void updateGraphParams(Graph graph) {
         this.x_min = graph.getX_min();
         this.x_max = graph.getX_max();
         this.y_min = graph.getY_min();
@@ -63,10 +63,10 @@ public class GraphWindow {
         int x;
         int y;
 
-        for(Graph.Point p: points) {
+        for (Graph.Point p : points) {
             x = getScreenX(p.getX());
 
-            if(p.isReal() && p.getY() >= y_min && p.getY() <= y_max) {
+            if (p.isReal() && p.getY() >= y_min && p.getY() <= y_max) {
                 y = getScreenY(p.getY());
                 graphPoints.add(new ScreenPoint(x, y, false));
             } else {
@@ -83,10 +83,10 @@ public class GraphWindow {
         ScreenPoint p_last = graphPoints.get(0);
         ScreenPoint p_current;
 
-        for(int i = 1; i < graphPoints.size(); i++) {
+        for (int i = 1; i < graphPoints.size(); i++) {
             p_current = graphPoints.get(i);
 
-            if(!p_last.isEmpty() && !p_current.isEmpty()) {
+            if (!p_last.isEmpty() && !p_current.isEmpty()) {
                 g.drawLine(p_last.getX(), p_last.getY(), p_current.getX(), p_current.getY());
             }
 
@@ -97,7 +97,7 @@ public class GraphWindow {
         drawDigitsStrokes();
     }
 
-    public void drawAxes() {
+    private void drawAxes() {
         int x_axis = getScreenX(0);
         int y_axis = getScreenY(0);
 
@@ -110,25 +110,25 @@ public class GraphWindow {
         g.drawLine(width, y_axis, width - 15, y_axis - 6);
     }
 
-    public void drawDigitsStrokes() {
+    private void drawDigitsStrokes() {
         double x_step = (x_max - x_min) / 17;
-        for(double i = x_min + x_step; i <= x_max; i+= x_step) {
-            if(Math.abs(i) < x_step * 0.001) continue;
+        for (double i = x_min + x_step; i <= x_max; i += x_step) {
+            if (Math.abs(i) < x_step * 0.001) continue;
 
-            g.drawLine(getScreenX(i), getScreenY(0)-5, getScreenX(i), getScreenY(0)+5);
+            g.drawLine(getScreenX(i), getScreenY(0) - 5, getScreenX(i), getScreenY(0) + 5);
 
             BigDecimal bd = new BigDecimal(i);
             bd = bd.round(new MathContext(2));
             String value = Double.toString(bd.doubleValue());
 
-            g.drawString(value, getScreenX(i)-16, getScreenY(0) + 22);
+            g.drawString(value, getScreenX(i) - 16, getScreenY(0) + 22);
         }
 
         double y_step = (y_max - y_min) / 10;
-        for(double i = y_min + y_step; i <= y_max - y_step; i+= y_step) {
-            if(Math.abs(i) < y_step * 0.001) continue;
+        for (double i = y_min + y_step; i <= y_max - y_step; i += y_step) {
+            if (Math.abs(i) < y_step * 0.001) continue;
 
-            g.drawLine(getScreenX(0)-5, getScreenY(i), getScreenX(0)+5, getScreenY(i));
+            g.drawLine(getScreenX(0) - 5, getScreenY(i), getScreenX(0) + 5, getScreenY(i));
 
             BigDecimal bd = new BigDecimal(i);
             bd = bd.round(new MathContext(2));
@@ -138,18 +138,18 @@ public class GraphWindow {
         }
     }
 
-    public int getScreenX(double x) {
+    private int getScreenX(double x) {
         return (int) ((x - x_min) / resX);
     }
 
-    public int getScreenY(double y) {
+    private int getScreenY(double y) {
         return (int) (height - (y - y_min) / resY - 1);
     }
 
     static class ScreenPoint {
-        private int x;
-        private int y;
-        private boolean empty;
+        private final int x;
+        private final int y;
+        private final boolean empty;
 
         public ScreenPoint(int x, int y, boolean empty) {
             this.x = x;
@@ -173,11 +173,6 @@ public class GraphWindow {
 
         public boolean isEmpty() {
             return empty;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("ScreenPoint[x: %d, y: %d, empty: %s]", x, y, empty);
         }
     }
 }

@@ -185,35 +185,23 @@ public class Window extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Exclude a": {
-                type_param = 0;
-                break;
-            }
-            case "y = f(x) + a": {
-                type_param = 1;
-                break;
-            }
-            case "y = f(x + a)": {
-                type_param = 2;
-                break;
-            }
-            case "Exclude k": {
-                type_mult = 0;
-                break;
-            }
-            case "y = k * f(x)": {
-                type_mult = 1;
-                break;
-            }
-            case "y = f(k * x)": {
-                type_mult = 2;
-                break;
-            }
-            case "Draw graph!": {
-                double x_min = 0;
-                double x_max = 0;
-                double y_min = 0;
-                double y_max = 0;
+            case "Exclude a" -> type_param = 0;
+
+            case "y = f(x) + a" -> type_param = 1;
+
+            case "y = f(x + a)" -> type_param = 2;
+
+            case "Exclude k" -> type_mult = 0;
+
+            case "y = k * f(x)" -> type_mult = 1;
+
+            case "y = f(k * x)" -> type_mult = 2;
+            
+            case "Draw graph!" -> {
+                double x_min;
+                double x_max;
+                double y_min;
+                double y_max;
                 double a = 0;
                 double k = 0;
 
@@ -225,12 +213,12 @@ public class Window extends JFrame implements ActionListener {
                     return;
                 }
 
-                if(x_min >= x_max) {
+                if (x_min >= x_max) {
                     l_output.setText("Xmin must be less than Xmax");
                     return;
                 }
 
-                if(tf_y_min.getText().equals("")) {
+                if (tf_y_min.getText().equals("")) {
                     y_min = Double.NaN;
                 } else {
                     try {
@@ -241,7 +229,7 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
 
-                if(tf_y_max.getText().equals("")) {
+                if (tf_y_max.getText().equals("")) {
                     y_max = Double.NaN;
                 } else {
                     try {
@@ -252,8 +240,8 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
 
-                if(type_param > 0) {
-                    if(tf_param.getText().equals("")) {
+                if (type_param > 0) {
+                    if (tf_param.getText().equals("")) {
                         type_param = 0;
                         rb_param_1.setSelected(true);
                     } else {
@@ -266,8 +254,8 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
 
-                if(type_mult > 0) {
-                    if(tf_mult.getText().equals("")) {
+                if (type_mult > 0) {
+                    if (tf_mult.getText().equals("")) {
                         type_mult = 0;
                         rb_mult_1.setSelected(true);
                     } else {
@@ -280,14 +268,18 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
 
-                if(y_min >= y_max) {
+                if (y_min >= y_max) {
                     l_output.setText("Ymin must be less than Ymax");
                     return;
                 }
 
-                graph = new Graph(1280, 720, x_min, x_max, y_min, y_max);
-                graph.setParams(type_param, type_mult, a, k);
-                graph.setChosen_function((String) box_functions.getSelectedItem());
+                Graph.Builder builder = new Graph.Builder().width(1280).height(720);
+                builder.xmin(x_min).xmax(x_max);
+                builder.ymin(y_min).ymax(y_max);
+                builder.tparam(type_param).tmult(type_mult);
+                builder.a(a).k(k);
+                builder.chosenfunction((String) box_functions.getSelectedItem());
+                graph = builder.build();
 
                 try {
                     graph.calculatePoints();
@@ -299,7 +291,6 @@ public class Window extends JFrame implements ActionListener {
                 GraphWindow graphWindow = new GraphWindow(graph, 1280, 720);
                 graphWindow.calculateScreenPoints();
                 graphWindow.drawGraph();
-                graphWindow.drawAxes();
                 l_graph.setIcon(new ImageIcon(graphWindow.getImg()));
             }
         }
