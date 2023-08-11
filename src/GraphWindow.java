@@ -118,12 +118,12 @@ public class GraphWindow {
     public void drawDigitsStrokes() {
         double x_step = (x_max - x_min) / 17;
         for(double i = x_min + x_step; i <= x_max; i+= x_step) {
-            if(i == 0) continue;
+            if(Math.abs(i) < x_step * 0.001) continue;
 
             g.drawLine(getScreenX(i), getScreenY(0)-5, getScreenX(i), getScreenY(0)+5);
 
             BigDecimal bd = new BigDecimal(i);
-            bd = bd.round(new MathContext(1));
+            bd = bd.round(new MathContext(2));
             String value = Double.toString(bd.doubleValue());
 
             g.drawString(value, getScreenX(i)-16, getScreenY(0) + 22);
@@ -131,12 +131,12 @@ public class GraphWindow {
 
         double y_step = (y_max - y_min) / 10;
         for(double i = y_min + y_step; i <= y_max - y_step; i+= y_step) {
-            if(i == 0) continue;
+            if(Math.abs(i) < y_step * 0.001) continue;
 
             g.drawLine(getScreenX(0)-5, getScreenY(i), getScreenX(0)+5, getScreenY(i));
 
             BigDecimal bd = new BigDecimal(i);
-            bd = bd.round(new MathContext(1));
+            bd = bd.round(new MathContext(2));
             String value = Double.toString(bd.doubleValue());
 
             g.drawString(value, getScreenX(0) + 9, getScreenY(i) + 7);
