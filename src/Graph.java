@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Graph {
@@ -15,6 +13,14 @@ public class Graph {
 
     private List<Point> points = new ArrayList<>();
 
+    private int type_param;
+    private int type_mult;
+
+    private double a;
+    private double k;
+
+    private String chosen_function;
+
     public Graph(int width, int height, double x_min, double x_max, double y_min, double y_max) {
         this.width = width;
         this.height = height;
@@ -22,20 +28,96 @@ public class Graph {
         this.x_max = x_max;
         this.y_min = y_min;
         this.y_max = y_max;
+        this.type_param = 0;
+        this.type_mult = 0;
+        this.a = 0.0;
+        this.k = 0.0;
+    }
+
+    public void setParams(int type_param, int type_mult, double a, double k) {
+        this.type_param = type_param;
+        this.type_mult = type_mult;
+        this.a = a;
+        this.k = k;
+    }
+
+    public void setChosen_function(String chosen_function) {
+        this.chosen_function = chosen_function;
     }
 
     private double func(double x) {
-        return 1 / x;
-    }
+        if(type_mult == 2) x*= k;
+        if(type_param == 2) x+= a;
 
-    private List<Point> getBreaks(double x_min, double x_max) {
-        List<Point> breaks = new ArrayList<>();
+        double f = 0;
 
-        if(x_min <= 0 && x_max >= 0) {
-            breaks.add(new Point(0, Double.NaN, false));
+        switch (chosen_function) {
+            case "y = x": {
+                f = x;
+                break;
+            }
+            case "y = a": {
+                f = a;
+                break;
+            }
+            case "y = x^2": {
+                f = x * x;
+                break;
+            }
+            case "y = x^3": {
+                f = x * x * x;
+                break;
+            }
+            case "y = 1 / x": {
+                f = 1 / x;
+                break;
+            }
+            case "y = e^x": {
+                f = Math.exp(x);
+                break;
+            }
+            case "y = sqrt(x)": {
+                f = Math.sqrt(x);
+                break;
+            }
+            case "y = sin(x)": {
+                f = Math.sin(x);
+                break;
+            }
+            case "y = cos(x)": {
+                f = Math.cos(x);
+                break;
+            }
+            case "y = tan(x)": {
+                f = Math.tan(x);
+                break;
+            }
+            case "y = arcsin(x)": {
+                f = Math.asin(x);
+                break;
+            }
+            case "y = arccos(x)": {
+                f = Math.acos(x);
+                break;
+            }
+            case "y = arctan(x)": {
+                f = Math.atan(x);
+                break;
+            }
+            case "Heart": {
+                f = (Math.sqrt(Math.cos(x)) * Math.cos(300 * x) + Math.sqrt(Math.abs(x))) * Math.pow((4 - x * x), 0.01);
+                break;
+            }
+            case "Triangular signal": {
+                f = Math.asin(Math.sin(x));
+                break;
+            }
         }
 
-        return breaks;
+        if(type_mult == 1) f*= k;
+        if(type_param == 1) f+= a;
+
+        return f;
     }
 
     public double getX_min() {
@@ -84,8 +166,8 @@ public class Graph {
         Double y;
         Point point;
 
-        if(y_min.equals(Double.NaN)) y_min = -resolution * height * 0.9 / 2;  // 10% of vertical space must be free
-        if(y_max.equals(Double.NaN)) y_max = resolution * height * 0.9 / 2;
+        if(y_min.equals(Double.NaN)) y_min = -resolution * height / 2;
+        if(y_max.equals(Double.NaN)) y_max = resolution * height / 2;
 
         for(int i = 0; i < width; i++) {
             x = x_min + i * (x_max - x_min) / (width - 1);
@@ -100,9 +182,6 @@ public class Graph {
 
             points.add(point);
         }
-
-        points.addAll(getBreaks(x_min, x_max));
-        Collections.sort(points);
 
         if(!hasRealValues) throw new NanException("The function doesn't have real values");
     }

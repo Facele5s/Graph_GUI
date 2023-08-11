@@ -1,11 +1,8 @@
-import org.w3c.dom.ls.LSOutput;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class Window extends JFrame implements ActionListener {
     Graph graph = null;
@@ -168,7 +165,7 @@ public class Window extends JFrame implements ActionListener {
 
         ////
 
-        String[] functions = {"y = k * x", "y = k", "y = x^2", "y = x^3", "y = 1 / x",
+        String[] functions = {"y = x", "y = a", "y = x^2", "y = x^3", "y = 1 / x",
                 "y = e^x", "y = sqrt(x)", "y = sin(x)", "y = cos(x)", "y = tan(x)", "y = arcsin(x)",
                 "y = arccos(x)", "y = arctan(x)", "Heart", "Triangular signal"
                 };

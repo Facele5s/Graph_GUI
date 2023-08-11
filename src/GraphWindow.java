@@ -1,8 +1,6 @@
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
@@ -44,6 +42,10 @@ public class GraphWindow {
         }
 
         updateGraphParams(graph);
+    }
+
+    public BufferedImage getImg() {
+        return img;
     }
 
     public void updateGraphParams(Graph graph) {
@@ -93,13 +95,6 @@ public class GraphWindow {
 
         drawAxes();
         drawDigitsStrokes();
-
-        /*File f = new File("img.png");
-        try {
-            ImageIO.write(img, "png", f);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     public void drawAxes() {
