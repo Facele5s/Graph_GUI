@@ -40,6 +40,9 @@ public class Window extends JFrame implements ActionListener {
 
     JComboBox<String> box_functions;
 
+    int type_param;
+    int type_mult;
+
     public Window() {
         super("Graph :D");
         setSize(1300, 1000);
@@ -107,13 +110,27 @@ public class Window extends JFrame implements ActionListener {
         l_mult.setHorizontalAlignment(JLabel.RIGHT);
         l_mult.setVerticalAlignment(JLabel.CENTER);
 
-        rb_param_1 = new JRadioButton("y = f(x)");
-        rb_param_2 = new JRadioButton("y = f(x) + a");
-        rb_param_3 = new JRadioButton("y = f(x + a)");
 
-        rb_mult_1 = new JRadioButton("y = f(x)");
+        rb_param_1 = new JRadioButton("Exclude a");
+        rb_param_1.setSelected(true);
+        rb_param_1.addActionListener(this);
+
+        rb_param_2 = new JRadioButton("y = f(x) + a");
+        rb_param_2.addActionListener(this);
+
+        rb_param_3 = new JRadioButton("y = f(x + a)");
+        rb_param_3.addActionListener(this);
+
+
+        rb_mult_1 = new JRadioButton("Exclude k");
+        rb_mult_1.setSelected(true);
+        rb_mult_1.addActionListener(this);
+
         rb_mult_2 = new JRadioButton("y = k * f(x)");
+        rb_mult_2.addActionListener(this);
+
         rb_mult_3 = new JRadioButton("y = f(k * x)");
+        rb_mult_3.addActionListener(this);
 
         ////
 
@@ -136,80 +153,158 @@ public class Window extends JFrame implements ActionListener {
         p_ranges.add(rb_param_1);
         p_ranges.add(rb_param_2);
         p_ranges.add(rb_param_3);
+        ButtonGroup bg_param = new ButtonGroup();
+        bg_param.add(rb_param_1);
+        bg_param.add(rb_param_2);
+        bg_param.add(rb_param_3);
 
         p_ranges.add(rb_mult_1);
         p_ranges.add(rb_mult_2);
         p_ranges.add(rb_mult_3);
+        ButtonGroup bg_mult = new ButtonGroup();
+        bg_mult.add(rb_mult_1);
+        bg_mult.add(rb_mult_2);
+        bg_mult.add(rb_mult_3);
 
         ////
 
-
-        String[] functions = {"y = k * x", "y = k", "y = x^2 + k", "y = 1 / x + k",
-                "y = e^x + k", "y = x^k", "y = sin(x) + k", "y = cos(x) + k", "y = tan(x) + k", "y = arcsin(x) + k",
-                "y = arccos(x) + k", "y = arctan(x) = k", "Heart", "Triangular signal"
+        String[] functions = {"y = k * x", "y = k", "y = x^2", "y = x^3", "y = 1 / x",
+                "y = e^x", "y = sqrt(x)", "y = sin(x)", "y = cos(x)", "y = tan(x)", "y = arcsin(x)",
+                "y = arccos(x)", "y = arctan(x)", "Heart", "Triangular signal"
                 };
         box_functions = new JComboBox<>(functions);
         p_function.add(box_functions);
 
-        btn_draw = new JButton("Draw graph");
+        btn_draw = new JButton("Draw graph!");
         btn_draw.addActionListener(this);
         p_function.add(btn_draw);
 
         l_output = new JLabel();
         p_function.add(l_output);
 
-
-
         setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*double x_min = 0;
-        double x_max = 0;
-        double y_min = 0;
-        double y_max = 0;
+        switch (e.getActionCommand()) {
+            case "Exclude a": {
+                type_param = 0;
+                break;
+            }
+            case "y = f(x) + a": {
+                type_param = 1;
+                break;
+            }
+            case "y = f(x + a)": {
+                type_param = 2;
+                break;
+            }
+            case "Exclude k": {
+                type_mult = 0;
+                break;
+            }
+            case "y = k * f(x)": {
+                type_mult = 1;
+                break;
+            }
+            case "y = f(k * x)": {
+                type_mult = 2;
+                break;
+            }
+            case "Draw graph!": {
+                double x_min = 0;
+                double x_max = 0;
+                double y_min = 0;
+                double y_max = 0;
+                double a = 0;
+                double k = 0;
 
-        try {
-            x_min = Double.parseDouble(tf_x_min.getText());
-            x_max = Double.parseDouble(tf_x_max.getText());
-        } catch (Exception ex) {
-            l_output.setText("Wrong input");
-        }
+                try {
+                    x_min = Double.parseDouble(tf_x_min.getText());
+                    x_max = Double.parseDouble(tf_x_max.getText());
+                } catch (Exception ex) {
+                    l_output.setText("Wrong 'x range' input");
+                    return;
+                }
 
-        if(tf_y_min.getText().equals("")) {
-            y_min = Double.NaN;
-        } else {
-            try {
-                y_min = Double.parseDouble(tf_y_min.getText());
-            } catch (Exception ex) {
-                l_output.setText("Wrong input");
+                if(x_min >= x_max) {
+                    l_output.setText("Xmin must be less than Xmax");
+                    return;
+                }
+
+                if(tf_y_min.getText().equals("")) {
+                    y_min = Double.NaN;
+                } else {
+                    try {
+                        y_min = Double.parseDouble(tf_y_min.getText());
+                    } catch (Exception ex) {
+                        l_output.setText("Wrong 'Ymin' input");
+                        return;
+                    }
+                }
+
+                if(tf_y_max.getText().equals("")) {
+                    y_max = Double.NaN;
+                } else {
+                    try {
+                        y_max = Double.parseDouble(tf_y_max.getText());
+                    } catch (Exception ex) {
+                        l_output.setText("Wrong 'Ymax' input");
+                        return;
+                    }
+                }
+
+                if(type_param > 0) {
+                    if(tf_param.getText().equals("")) {
+                        type_param = 0;
+                        rb_param_1.setSelected(true);
+                    } else {
+                        try {
+                            a = Double.parseDouble(tf_param.getText());
+                        } catch (Exception ex) {
+                            l_output.setText("Wrong 'a' input");
+                            return;
+                        }
+                    }
+                }
+
+                if(type_mult > 0) {
+                    if(tf_mult.getText().equals("")) {
+                        type_mult = 0;
+                        rb_mult_1.setSelected(true);
+                    } else {
+                        try {
+                            k = Double.parseDouble(tf_mult.getText());
+                        } catch (Exception ex) {
+                            l_output.setText("Wrong 'k' input");
+                            return;
+                        }
+                    }
+                }
+
+                if(y_min >= y_max) {
+                    l_output.setText("Ymin must be less than Ymax");
+                    return;
+                }
+
+                graph = new Graph(1280, 720, x_min, x_max, y_min, y_max);
+                graph.setParams(type_param, type_mult, a, k);
+                graph.setChosen_function((String) box_functions.getSelectedItem());
+
+                try {
+                    graph.calculatePoints();
+                } catch (NanException ex) {
+                    l_output.setText("Function doesn't have real values in this range");
+                    return;
+                }
+
+                GraphWindow graphWindow = new GraphWindow(graph, 1280, 720);
+                graphWindow.calculateScreenPoints();
+                graphWindow.drawGraph();
+                graphWindow.drawAxes();
+                l_graph.setIcon(new ImageIcon(graphWindow.getImg()));
             }
         }
-
-        if(tf_y_max.getText().equals("")) {
-            y_max = Double.NaN;
-        } else {
-            try {
-                y_max = Double.parseDouble(tf_y_max.getText());
-            } catch (Exception ex) {
-                l_output.setText("Wrong input");
-            }
-        }
-
-        graph = new Graph(1280, 720, x_min, x_max, y_min, y_max);
-
-        try {
-            graph.calculatePoints();
-        } catch (NanException ex) {
-            l_output.setText("Function doesn't have real values in this range");
-        }
-
-        GraphWindow graphWindow = new GraphWindow(graph, 1280, 720);
-        graphWindow.calculateScreenPoints();
-        graphWindow.drawGraph();
-        graphWindow.drawAxes();
-        l_graph.setIcon(new ImageIcon(graphWindow.getImg()));*/
-
     }
 }
